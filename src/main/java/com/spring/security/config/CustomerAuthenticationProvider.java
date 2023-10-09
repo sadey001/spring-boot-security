@@ -11,6 +11,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
@@ -52,7 +53,9 @@ public class CustomerAuthenticationProvider implements AuthenticationProvider{
 			}
 			if(passwordEncoder.matches(password,customers.get(0).getPassword())) {
 				
-				return new UsernamePasswordAuthenticationToken(username, password, auths);
+				Authentication auth= new UsernamePasswordAuthenticationToken(username, password, auths);
+				SecurityContextHolder.getContext().setAuthentication(auth);
+				return auth;
 			}else {
 				throw new BadCredentialsException("Invalid credentials");
 			}
